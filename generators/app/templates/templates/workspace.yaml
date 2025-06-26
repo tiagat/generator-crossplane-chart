@@ -1,0 +1,64 @@
+apiVersion: tf.upbound.io/v1beta1
+kind: Workspace
+metadata:
+  name: {{ include "<%= name %>.name" . }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.providerConfig }}
+  providerConfigRef:
+    {{- toYaml . | nindent 4 }}
+  {{- end}}
+  forProvider:
+    env:
+    {{- range $k, $v := .Values.env }}
+      - name: {{ $k }}
+        value: {{ $v | quote }}
+    {{- end }}
+    {{- range $k, $v := .Values.envConfigMap }}
+      - name: {{ $k }}
+        configMapKeyRef:
+          namespace: {{ $v.namespace }}
+          name: {{ $v.name }}
+          key: {{ $v.key }}
+    {{- end }}
+    {{- range $k, $v := .Values.envSecrets }}
+      - name: {{ $k }}
+        secretKeyRef:
+          namespace: {{ $v.namespace }}
+          name: {{ $v.name }}
+          key: {{ $v.key }}
+    {{- end }}
+    vars:
+    {{- range $k, $v := .Values.vars }}
+      - key: {{ $k }}
+        value: {{ $v | quote }}
+    {{- end }}
+    {{- with .Values.varmap }}
+    varmap:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.varFiles }}
+    varFiles:
+    {{- range $file := . }}
+      - source: SecretKey
+        format: JSON
+        secretKeyRef:
+          namespace: {{ $file.namespace }}
+          name: {{ $file.secret }}
+          key: {{ $file.key }}
+    {{- end }}
+    {{- end }}
+    source: Inline
+    module: |
+      {{- range $path, $_ := .Files.Glob "terraform/*.tf" }}
+        {{- $filename := base $path }}
+        {{- if and (not (regexMatch "^provider.*\\.tf$" $filename)) (not (regexMatch ".*override\\.tf$" $filename)) }}
+      {{ $.Files.Get $path | nindent 6 }}
+        {{- end }}
+      {{- end }}
+  writeConnectionSecretToRef:
+    namespace: {{ .Release.Namespace }}
+    name: {{ include "<%= name %>.output.secret.name" . }}

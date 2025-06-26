@@ -1,0 +1,46 @@
+# Default values for cloudflare-zerotrust.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Workspace annotations
+annotations: {}
+
+# Reference to the ProviderConfig that will be used by the workspace.
+# Must be created before the workspace.
+providerConfig:
+  name: <%= provider %>
+
+# Environment variables for set terraform variables
+# Each item will be transformed to a `TF_VAR_<name>` variable in the workspace
+env: {}
+  # TF_VAR_dummy: value
+
+envConfigMap: {}
+  # TF_VAR_dummy:
+  #   namespace: my-namespace
+  #   name: my-config-map
+  #   key: target-key
+
+envSecrets: {}
+  # TF_VAR_dummy:
+  #   namespace: my-namespace
+  #   name: my-secret
+  #   key: target-key
+
+# Terraform variables as a list of key-value pairs or JSON object
+# It can be specified inline or loaded from ConfigMap/Secret.
+vars: {}
+  # dummy: Crossplane Terraform Provider
+
+varmap: {}
+  # account:
+  #   region: us-west-1
+  #   owners:
+  #     - example-owner-1
+  #     - example-owner-2
+
+varFiles: []
+  # - namespace: default
+  #   secret: my-secret
+  #   key: terraform.tfvar.json
+  #   format: JSON

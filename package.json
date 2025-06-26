@@ -1,0 +1,14 @@
+{
+  "name": "generator-crossplane-chart",
+  "version": "1.0.0",
+  "main": "index.js",
+  "files": [
+    "generators"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "yeoman-generator": "^7.5.1"
+  }
+}

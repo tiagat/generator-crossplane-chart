@@ -1,0 +1,9 @@
+vars:
+  dummy: Crossplane Terraform Provider
+
+varmap:
+  account:
+    region: us-west-1
+    owners:
+      - example-owner-1
+      - example-owner-2

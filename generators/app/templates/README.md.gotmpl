@@ -1,0 +1,15 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ .Files.Get "docs/usage.md" }}
+
+{{ .Files.Get "docs/troubleshooting.md" }}
+
+{{ template "chart.valuesSection" . }}
+
+
+{{ template "helm-docs.versionFooter" . }}
